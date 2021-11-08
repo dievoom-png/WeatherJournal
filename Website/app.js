@@ -1,20 +1,25 @@
 /* Global Variables */
-const apiKey = 'cfb61b45ec82c5f4f5fbc40744a07f8f';
-const baseUrl = 'api.openweathermap.org/data/2.5/weather?zip=';
+const apiKey = '0d408b07ca35238b77ba75ed90be78c8';
+const baseUrl = 'http://api.openweathermap.org/data/2.5/weather?zip=';
 
 
 let button = document.getElementById("generate");
 //api.openweathermap.org/data/2.5/weather?zip={zip code},{country code}&appid={API key}
-getWeather = async (zipCode) => {
+//api.openweathermap.org/data/2.5/weather?zip=94040,us&appid={API key}
+getWeather = async (baseUrl,zipCode,apikey) => {
     alert('clicked');
-    let res = await fetch(baseUrl + zipCode + '&appid=' + apiKey)
+    const res = await fetch(baseUrl+ zipCode+',us' + '&APPID=' + apiKey)
+
+    console.log(res);
+
     try {
-        const data = await res.json();
-        postWeather('/all', data);              //send as{temp:data.main.temp......}
-        alert('sent');
-        console.log(res);
+        const apiData = await res.json();
+
+        alert(res.status);
+        console.log(apiData);
+        return (temp = apiData.main.temp);
     } catch (error) {
-        console.log("error", error);
+        console.log(error);
     }
 }
 
@@ -31,12 +36,30 @@ const postWeather = async (url = '', data = {}) => {
     })
 };
 
+
+updateLog = async () => {
+
+}
 // Create a new date instance dynamically with JS
 
 button.addEventListener('click', () => {
     let zipCode = document.getElementById("zip").value;
     let feelings = document.getElementById('feelings').value
-    getWeather(zipCode);
+    getWeather(baseUrl,zipCode,apiKey)
+        .then(function (temp) {
+            postWeather('/all', {
+                    temp: temp,
+                    date: newDate,
+                    feeling: feelings
+                })
+                .then(function () {
+                    updateLog();
+
+                })
+        })
+        .catch(error => console.log(error));
+
+
 });
 
 let d = new Date();
