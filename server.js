@@ -8,12 +8,12 @@ const express = require('express');
 const app = express();
 
 /* Dependencies */
-const bodyParser = require('body-parser');
+
 
 /* Middleware*/
 //Here we are configuring express to use body-parser as middle-ware.
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 // Cors for cross origin allowance
 const cors = require('cors');
@@ -28,6 +28,14 @@ app.listen(port, () => {
     console.log(`Example app listening at 127.0.0.1:${port}`)
 })
 
-app.post('/all', (req, res) => {
-    projectData.push(req.body)
+app.post('/all', (req, res) => { //grabs the data from the frontend
+    //projectData.push(req.body)
+    projectData.temp = req.body.temperature;
+    projectData.date = req.body.date;
+    projectData.feelings = req.body.feelings;
+    res.end();
+
+})
+app.get("/getWeatherData",(req,res)=>{//sends the data to be displayed to the user using the updatelog function
+    res.send(projectData);
 })
